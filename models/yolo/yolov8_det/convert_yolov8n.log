@@ -1,0 +1,145 @@
+I rknn-toolkit2 version: 2.3.2
+Converting yolov8n_zoo.onnx -> yolov8n_zoo_W8A8.rknn
+Target: rv1126b
+Calibration: calibration_200.txt
+Calibration images: 200
+
+Configuring RKNN...
+
+Loading ONNX model...
+I Loading :   0%|                                                           | 0/126 [00:00<?, ?it/s]I Loading : 100%|██████████████████████████████████████████████| 126/126 [00:00<00:00, 46611.60it/s]
+D base_optimize ...
+D base_optimize done.
+D 
+D fold_constant ...
+D fold_constant done.
+D 
+D correct_ops ...
+D correct_ops done.
+D 
+D fuse_ops ...
+D fuse_ops results:
+D     replace_exswish: remove node = ['/model.0/act/Sigmoid', '/model.0/act/Mul'], add node = ['/model.0/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.1/act/Sigmoid', '/model.1/act/Mul'], add node = ['/model.1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.2/cv1/act/Sigmoid', '/model.2/cv1/act/Mul'], add node = ['/model.2/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.2/m.0/cv1/act/Sigmoid', '/model.2/m.0/cv1/act/Mul'], add node = ['/model.2/m.0/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.2/m.0/cv2/act/Sigmoid', '/model.2/m.0/cv2/act/Mul'], add node = ['/model.2/m.0/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.2/cv2/act/Sigmoid', '/model.2/cv2/act/Mul'], add node = ['/model.2/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.3/act/Sigmoid', '/model.3/act/Mul'], add node = ['/model.3/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.4/cv1/act/Sigmoid', '/model.4/cv1/act/Mul'], add node = ['/model.4/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.4/m.0/cv1/act/Sigmoid', '/model.4/m.0/cv1/act/Mul'], add node = ['/model.4/m.0/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.4/m.0/cv2/act/Sigmoid', '/model.4/m.0/cv2/act/Mul'], add node = ['/model.4/m.0/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.4/m.1/cv1/act/Sigmoid', '/model.4/m.1/cv1/act/Mul'], add node = ['/model.4/m.1/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.4/m.1/cv2/act/Sigmoid', '/model.4/m.1/cv2/act/Mul'], add node = ['/model.4/m.1/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.4/cv2/act/Sigmoid', '/model.4/cv2/act/Mul'], add node = ['/model.4/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.5/act/Sigmoid', '/model.5/act/Mul'], add node = ['/model.5/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.6/cv1/act/Sigmoid', '/model.6/cv1/act/Mul'], add node = ['/model.6/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.6/m.0/cv1/act/Sigmoid', '/model.6/m.0/cv1/act/Mul'], add node = ['/model.6/m.0/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.6/m.0/cv2/act/Sigmoid', '/model.6/m.0/cv2/act/Mul'], add node = ['/model.6/m.0/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.6/m.1/cv1/act/Sigmoid', '/model.6/m.1/cv1/act/Mul'], add node = ['/model.6/m.1/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.6/m.1/cv2/act/Sigmoid', '/model.6/m.1/cv2/act/Mul'], add node = ['/model.6/m.1/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.6/cv2/act/Sigmoid', '/model.6/cv2/act/Mul'], add node = ['/model.6/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.7/act/Sigmoid', '/model.7/act/Mul'], add node = ['/model.7/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.8/cv1/act/Sigmoid', '/model.8/cv1/act/Mul'], add node = ['/model.8/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.8/m.0/cv1/act/Sigmoid', '/model.8/m.0/cv1/act/Mul'], add node = ['/model.8/m.0/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.8/m.0/cv2/act/Sigmoid', '/model.8/m.0/cv2/act/Mul'], add node = ['/model.8/m.0/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.8/cv2/act/Sigmoid', '/model.8/cv2/act/Mul'], add node = ['/model.8/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.9/cv1/act/Sigmoid', '/model.9/cv1/act/Mul'], add node = ['/model.9/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.9/cv2/act/Sigmoid', '/model.9/cv2/act/Mul'], add node = ['/model.9/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.12/cv1/act/Sigmoid', '/model.12/cv1/act/Mul'], add node = ['/model.12/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.12/m.0/cv1/act/Sigmoid', '/model.12/m.0/cv1/act/Mul'], add node = ['/model.12/m.0/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.12/m.0/cv2/act/Sigmoid', '/model.12/m.0/cv2/act/Mul'], add node = ['/model.12/m.0/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.12/cv2/act/Sigmoid', '/model.12/cv2/act/Mul'], add node = ['/model.12/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.15/cv1/act/Sigmoid', '/model.15/cv1/act/Mul'], add node = ['/model.15/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.15/m.0/cv1/act/Sigmoid', '/model.15/m.0/cv1/act/Mul'], add node = ['/model.15/m.0/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.15/m.0/cv2/act/Sigmoid', '/model.15/m.0/cv2/act/Mul'], add node = ['/model.15/m.0/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.15/cv2/act/Sigmoid', '/model.15/cv2/act/Mul'], add node = ['/model.15/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.16/act/Sigmoid', '/model.16/act/Mul'], add node = ['/model.16/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.18/cv1/act/Sigmoid', '/model.18/cv1/act/Mul'], add node = ['/model.18/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.18/m.0/cv1/act/Sigmoid', '/model.18/m.0/cv1/act/Mul'], add node = ['/model.18/m.0/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.18/m.0/cv2/act/Sigmoid', '/model.18/m.0/cv2/act/Mul'], add node = ['/model.18/m.0/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.18/cv2/act/Sigmoid', '/model.18/cv2/act/Mul'], add node = ['/model.18/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.19/act/Sigmoid', '/model.19/act/Mul'], add node = ['/model.19/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.21/cv1/act/Sigmoid', '/model.21/cv1/act/Mul'], add node = ['/model.21/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.21/m.0/cv1/act/Sigmoid', '/model.21/m.0/cv1/act/Mul'], add node = ['/model.21/m.0/cv1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.21/m.0/cv2/act/Sigmoid', '/model.21/m.0/cv2/act/Mul'], add node = ['/model.21/m.0/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.21/cv2/act/Sigmoid', '/model.21/cv2/act/Mul'], add node = ['/model.21/cv2/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv2.2/cv2.2.0/act/Sigmoid', '/model.22/cv2.2/cv2.2.0/act/Mul'], add node = ['/model.22/cv2.2/cv2.2.0/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv2.2/cv2.2.1/act/Sigmoid', '/model.22/cv2.2/cv2.2.1/act/Mul'], add node = ['/model.22/cv2.2/cv2.2.1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv3.2/cv3.2.0/act/Sigmoid', '/model.22/cv3.2/cv3.2.0/act/Mul'], add node = ['/model.22/cv3.2/cv3.2.0/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv3.2/cv3.2.1/act/Sigmoid', '/model.22/cv3.2/cv3.2.1/act/Mul'], add node = ['/model.22/cv3.2/cv3.2.1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv2.1/cv2.1.0/act/Sigmoid', '/model.22/cv2.1/cv2.1.0/act/Mul'], add node = ['/model.22/cv2.1/cv2.1.0/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv2.1/cv2.1.1/act/Sigmoid', '/model.22/cv2.1/cv2.1.1/act/Mul'], add node = ['/model.22/cv2.1/cv2.1.1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv3.1/cv3.1.0/act/Sigmoid', '/model.22/cv3.1/cv3.1.0/act/Mul'], add node = ['/model.22/cv3.1/cv3.1.0/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv3.1/cv3.1.1/act/Sigmoid', '/model.22/cv3.1/cv3.1.1/act/Mul'], add node = ['/model.22/cv3.1/cv3.1.1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv2.0/cv2.0.0/act/Sigmoid', '/model.22/cv2.0/cv2.0.0/act/Mul'], add node = ['/model.22/cv2.0/cv2.0.0/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv2.0/cv2.0.1/act/Sigmoid', '/model.22/cv2.0/cv2.0.1/act/Mul'], add node = ['/model.22/cv2.0/cv2.0.1/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv3.0/cv3.0.0/act/Sigmoid', '/model.22/cv3.0/cv3.0.0/act/Mul'], add node = ['/model.22/cv3.0/cv3.0.0/act/Sigmoid_2swish']
+D     replace_exswish: remove node = ['/model.22/cv3.0/cv3.0.1/act/Sigmoid', '/model.22/cv3.0/cv3.0.1/act/Mul'], add node = ['/model.22/cv3.0/cv3.0.1/act/Sigmoid_2swish']
+D     convert_reduce_sum_to_conv: remove node = ['/model.22/ReduceSum_2'], add node = ['/model.22/ReduceSum_2_2conv']
+D     convert_reduce_sum_to_conv: remove node = ['/model.22/ReduceSum_1'], add node = ['/model.22/ReduceSum_1_2conv']
+D     convert_reduce_sum_to_conv: remove node = ['/model.22/ReduceSum'], add node = ['/model.22/ReduceSum_2conv']
+D     fold_constant ...
+D     fold_constant done.
+D fuse_ops done.
+D 
+[1;33mW[0m [1;33mbuild: found outlier value, this may affect quantization accuracy
+                        const name                        abs_mean    abs_std     outlier value
+                        model.0.conv.weight               2.44        2.47        -17.494     
+                        model.22.cv3.2.1.conv.weight      0.09        0.14        -10.215     
+                        model.22.cv3.1.1.conv.weight      0.12        0.19        13.361, 13.317
+                        model.22.cv3.0.1.conv.weight      0.18        0.20        -11.216     [0m
+D sparse_weight ...
+D sparse_weight done.
+D 
+
+Building RKNN model (INT8 quantization)...
+I GraphPreparing :   0%|                                                    | 0/161 [00:00<?, ?it/s]I GraphPreparing : 100%|███████████████████████████████████████| 161/161 [00:00<00:00, 25704.50it/s]
+I Quantizating 1/3:   0%|                                                   | 0/161 [00:00<?, ?it/s][ WARN:0@0.759] global loadsave.cpp:241 findDecoder imread_('/home/seeed/recamera_pro/benchmark/models/yolo/yolov8_det/calibration/val2017/000000072852.jpg'): can't open/read file: check file path/integrity
+[1;31mE[0m [1;31mbuild: The image of /home/seeed/recamera_pro/benchmark/models/yolo/yolov8_det/calibration/val2017/000000072852.jpg is invalid![0m
+[1;33mW[0m [1;33mbuild: ===================== WARN(1) =====================[0m
+[1;31mE[0m [1;31mrknn-toolkit2 version: 2.3.2[0m
+I Quantizating 1/3:   0%|                                                   | 0/161 [00:00<?, ?it/s]
+[1;31mE[0m [1;31mbuild: Traceback (most recent call last):
+  File "rknn/api/rknn_log.py", line 344, in rknn.api.rknn_log.error_catch_decorator.error_catch_wrapper
+  File "rknn/api/rknn_base.py", line 2041, in rknn.api.rknn_base.RKNNBase.build
+  File "rknn/api/rknn_base.py", line 175, in rknn.api.rknn_base.RKNNBase._quantize
+  File "rknn/api/quantizer.py", line 1419, in rknn.api.quantizer.Quantizer.run
+  File "rknn/api/quantizer.py", line 900, in rknn.api.quantizer.Quantizer._get_layer_range
+  File "rknn/api/rknn_utils.py", line 271, in rknn.api.rknn_utils.get_input_img
+  File "rknn/api/rknn_log.py", line 95, in rknn.api.rknn_log.RKNNLog.e
+ValueError: The image of /home/seeed/recamera_pro/benchmark/models/yolo/yolov8_det/calibration/val2017/000000072852.jpg is invalid!
+[0m
+I ===================== WARN(0) =====================
+[1;31mE[0m [1;31mrknn-toolkit2 version: 2.3.2[0m
+Traceback (most recent call last):
+  File "rknn/api/rknn_log.py", line 344, in rknn.api.rknn_log.error_catch_decorator.error_catch_wrapper
+  File "rknn/api/rknn_base.py", line 2041, in rknn.api.rknn_base.RKNNBase.build
+  File "rknn/api/rknn_base.py", line 175, in rknn.api.rknn_base.RKNNBase._quantize
+  File "rknn/api/quantizer.py", line 1419, in rknn.api.quantizer.Quantizer.run
+  File "rknn/api/quantizer.py", line 900, in rknn.api.quantizer.Quantizer._get_layer_range
+  File "rknn/api/rknn_utils.py", line 271, in rknn.api.rknn_utils.get_input_img
+  File "rknn/api/rknn_log.py", line 95, in rknn.api.rknn_log.RKNNLog.e
+ValueError: The image of /home/seeed/recamera_pro/benchmark/models/yolo/yolov8_det/calibration/val2017/000000072852.jpg is invalid!
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/seeed/recamera_pro/benchmark/models/yolo/yolov8_det/convert_to_rknn.py", line 79, in <module>
+    exit(main())
+  File "/home/seeed/recamera_pro/benchmark/models/yolo/yolov8_det/convert_to_rknn.py", line 60, in main
+    ret = rknn.build(do_quantization=True, dataset=args.calibration)
+  File "/home/seeed/miniconda3/envs/rknn_bench/lib/python3.10/site-packages/rknn/api/rknn.py", line 198, in build
+    return self.rknn_base.build(do_quantization=do_quantization, dataset=dataset, expand_batch_size=rknn_batch_size, auto_hybrid=auto_hybrid)
+  File "rknn/api/rknn_log.py", line 349, in rknn.api.rknn_log.error_catch_decorator.error_catch_wrapper
+  File "rknn/api/rknn_log.py", line 95, in rknn.api.rknn_log.RKNNLog.e
+ValueError: Traceback (most recent call last):
+  File "rknn/api/rknn_log.py", line 344, in rknn.api.rknn_log.error_catch_decorator.error_catch_wrapper
+  File "rknn/api/rknn_base.py", line 2041, in rknn.api.rknn_base.RKNNBase.build
+  File "rknn/api/rknn_base.py", line 175, in rknn.api.rknn_base.RKNNBase._quantize
+  File "rknn/api/quantizer.py", line 1419, in rknn.api.quantizer.Quantizer.run
+  File "rknn/api/quantizer.py", line 900, in rknn.api.quantizer.Quantizer._get_layer_range
+  File "rknn/api/rknn_utils.py", line 271, in rknn.api.rknn_utils.get_input_img
+  File "rknn/api/rknn_log.py", line 95, in rknn.api.rknn_log.RKNNLog.e
+ValueError: The image of /home/seeed/recamera_pro/benchmark/models/yolo/yolov8_det/calibration/val2017/000000072852.jpg is invalid!
+

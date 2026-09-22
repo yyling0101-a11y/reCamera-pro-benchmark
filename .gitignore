@@ -1,0 +1,36 @@
+# Artifacts — PT and ONNX intermediate files (not published)
+artifacts/
+doc/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+
+# Conda/Venv
+.conda/
+env/
+venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Calibration data (not needed for repo; scripts download from official sources)
+calibration/
+
+# Benchmark temp files
+*.tmp
+*.lock
+
+# Large PDFs in doc/ (keep only if small)
+# doc/ is kept (only contains the Rockchip PDF reference)
+
+output/

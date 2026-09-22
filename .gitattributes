@@ -1,0 +1,6 @@
+# Git LFS for large RKNN model files
+*.rknn filter=lfs diff=lfs merge=lfs -text
+
+# PDF tracked normally
+*.pdf -filter=lfs
+

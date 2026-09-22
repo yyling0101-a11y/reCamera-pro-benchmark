@@ -53,6 +53,13 @@ def dfl_decode(x, reg_max=16):
     return (x * weights).sum(axis=2)
 
 
+
+import sys as _sys
+_tools_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'tools')
+if os.path.isdir(_tools_dir) and _tools_dir not in _sys.path:
+    _sys.path.insert(0, _tools_dir)
+from rga_preprocess import RGAPreprocessor
+
 def letterbox(img, new_shape=(640, 640), color=(114, 114, 114)):
     shape = img.shape[:2]
     r = min(new_shape[0] / shape[0], new_shape[1] / shape[1])
@@ -284,6 +291,9 @@ def main():
     ret = rknn.init_runtime(core_mask=RKNNLite.NPU_CORE_AUTO)
     if ret != 0:
         print(f"ERROR: init_runtime failed: {ret}"); return 1
+    preproc = RGAPreprocessor(target_size=(args.imgsz, args.imgsz))
+    print(f"Preprocessor: {'RGA' if preproc.available else 'CPU'} letterbox")
+
 
     img_input = None
     ratio, dw, dh = 1.0, 0.0, 0.0
@@ -297,14 +307,14 @@ def main():
                        "appsink drop=true max-buffers=1")
         cap = cv2.VideoCapture(gst_pipeline, cv2.CAP_GSTREAMER)
         if not cap.isOpened():
-            print("ERROR: Cannot open camera via GStreamer (/dev/video13)"); rknn.release(); return 1
+            print("ERROR: Cannot open camera via GStreamer (/dev/video13)"); preproc.release(); rknn.release(); return 1
         print("Camera /dev/video13 opened via GStreamer")
 
         print(f"\nWarmup ({WARMUP_RUNS} iters)...")
         for _ in range(WARMUP_RUNS):
             ret_cam, frame = cap.read()
             if ret_cam:
-                img_lb, _, _ = letterbox(frame, (args.imgsz, args.imgsz))
+                img_lb, _, _ = preproc.process(frame)
                 inp = img_lb[np.newaxis, :, :, :].astype(np.uint8)
                 rknn.inference(inputs=[inp])
 
@@ -314,9 +324,9 @@ def main():
             ret_cam, frame = cap.read()
             if not ret_cam:
                 continue
-            img_lb, _, _ = letterbox(frame, (args.imgsz, args.imgsz))
-            inp = img_lb[np.newaxis, :, :, :].astype(np.uint8)
             t0 = time.perf_counter()
+            img_lb, _, _ = preproc.process(frame)
+            inp = img_lb[np.newaxis, :, :, :].astype(np.uint8)
             rknn.inference(inputs=[inp])
             t1 = time.perf_counter()
             if i >= WARMUP_RUNS:
@@ -330,6 +340,8 @@ def main():
         print(f"  Max: {np.max(latencies):.2f} ms")
         print(f"  FPS: {1000.0 / np.mean(latencies):.1f}")
 
+        preproc.release()
+
         rknn.release()
         print(f"{'='*60}\n")
         return 0
@@ -338,7 +350,7 @@ def main():
     print(f"Image: {args.input}")
     orig_img = cv2.imread(args.input)
     if orig_img is None:
-        print(f"ERROR: Cannot read {args.input}"); rknn.release(); return 1
+        print(f"ERROR: Cannot read {args.input}"); preproc.release(); rknn.release(); return 1
     print(f"Image size: {orig_img.shape}")
 
     img_lb, ratio, (dw, dh) = letterbox(orig_img, (args.imgsz, args.imgsz))
@@ -346,13 +358,17 @@ def main():
 
     print(f"\nWarmup ({WARMUP_RUNS} iters)...")
     for _ in range(WARMUP_RUNS):
-        rknn.inference(inputs=[img_input])
+        img_lb_w, _, _ = preproc.process(orig_img)
+        img_input_w = img_lb_w[np.newaxis, :, :, :].astype(np.uint8)
+        rknn.inference(inputs=[img_input_w])
 
     print(f"Benchmark ({TOTAL_RUNS} runs, skipping first {WARMUP_RUNS})...")
     latencies = []
     last_outputs = None
     for i in range(TOTAL_RUNS):
         t0 = time.perf_counter()
+        img_lb, ratio, (dw, dh) = preproc.process(orig_img)
+        img_input = img_lb[np.newaxis, :, :, :].astype(np.uint8)
         outputs = rknn.inference(inputs=[img_input])
         t1 = time.perf_counter()
         if i >= WARMUP_RUNS:
@@ -382,6 +398,8 @@ def main():
     output_path = os.path.join(script_dir, f"result_{input_basename}.jpg")
     cv2.imwrite(output_path, img_draw)
     print(f"Saved: {output_path}")
+
+    preproc.release()
 
     rknn.release()
     print(f"{'='*60}\n")

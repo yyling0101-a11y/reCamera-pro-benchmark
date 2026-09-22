@@ -34,3 +34,8 @@ calibration/
 # doc/ is kept (only contains the Rockchip PDF reference)
 
 output/
+# GitHub has a 100 MB per-file hard limit (kept locally only)
+models/zipformer/zipformer_encoder_official_FP16.rknn
+
+# ONNX-graph debug snapshots produced during optimization (kept locally only)
+check[0-9]*.onnx

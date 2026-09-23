@@ -81,37 +81,37 @@ Each model sub-directory is self-contained with:
 
 ### Object Detection
 
-| Model | FPS | Latency | Quant | Size |
-|-------|-----|---------|-------|------|
-| yolo26n | 22.5 | 44.4 ms | INT8 | 4.22 MB |
-| yolov8n | 20.6 | 48.5 ms | INT8 | 4.2 MB |
-| yolo11n | 20.7 | 48.3 ms | INT8 | — |
-| yolov8s | 14.5 | 69.1 ms | INT8 | 12 MB |
-| yolo11s | 13.4 | 74.4 ms | INT8 | — |
+| Model | Input | Precision | Latency (ms) | FPS | Power (W) |
+|-------|-------|-----------|--------------|-----|-----------|
+| YOLO26n | 640×640 | INT8 | 37.48 | 26.7 | 5.2 |
+| YOLO11n | 640×640 | INT8 | 38.70 | 25.8 | 5.2 |
+| YOLO11s | 640×640 | INT8 | 58.50 | 17.1 | 5.2 |
+| YOLOv8n | 640×640 | INT8 | 36.35 | 27.5 | 5.1 |
+| YOLOv8s | 640×640 | INT8 | 37.25 | 26.8 | 5.1 |
 
 ### Pose Estimation
 
-| Model | FPS | Latency | Size |
-|-------|-----|---------|------|
-| yolo26n-pose | 22.2 | 45.1 ms | 4.81 MB |
-| yolov8n-pose | 21.8 | 45.9 ms | 4.88 MB |
-| yolo11n-pose | 7.3 | 137 ms | — |
+| Model | Input | Precision | Latency (ms) | FPS | Power (W) |
+|-------|-------|-----------|--------------|-----|-----------|
+| YOLO26n-pose | 640×640 | INT8 | 37.31 | 26.8 | 5.2 |
+| YOLO11n-pose | 640×640 | INT8 | 38.19 | 26.2 | 5.6 |
+| YOLOv8n-pose | 640×640 | INT8 | 36.92 | 27.1 | 5.3 |
 
 ### Instance Segmentation
 
-| Model | FPS | Latency | Size |
-|-------|-----|---------|------|
-| yolo26n-seg | 14.9 | 67.3 ms | 4.76 MB |
-| yolov8n-seg | 12.8 | 77.9 ms | 4.61 MB |
-| yolo11n-seg | 6.6 | 151 ms | — |
+| Model | Input | Precision | Latency (ms) | FPS | Power (W) |
+|-------|-------|-----------|--------------|-----|-----------|
+| YOLO26n-seg | 640×640 | INT8 | 55.11 | 18.1 | 5.4 |
+| YOLO11n-seg | 640×640 | INT8 | 54.59 | 18.3 | 5.4 |
+| YOLOv8n-seg | 640×640 | INT8 | 61.89 | 16.2 | 5.4 |
 
 ### Oriented Bounding Box (OBB)
 
-| Model | FPS | Latency | Size |
-|-------|-----|---------|------|
-| yolo26n-obb | 23.5 | 42.5 ms | 4.36 MB |
-| yolov8n-obb | 27.0 | 37.0 ms | — |
-| yolo11n-obb | TBD | TBD | — |
+| Model | Input | Precision | Latency (ms) | FPS | Power (W) |
+|-------|-------|-----------|--------------|-----|-----------|
+| YOLO26n-obb | 640×640 | INT8 | 33.57 | 29.8 | 5.2 |
+| YOLO11n-obb | 640×640 | INT8 | 34.40 | 29.1 | 5.3 |
+| YOLOv8n-obb | 640×640 | INT8 | 35.56 | 28.1 | 5.3 |
 
 ### Classification
 
@@ -122,25 +122,26 @@ Each model sub-directory is self-contained with:
 
 ### Depth Estimation
 
-| Model | FPS | Latency | Size |
-|-------|-----|---------|------|
-| yolo26n-depth (640²) | 8.1 | 123.0 ms | 6.7 MB |
+| Model | Input | Precision | Latency (ms) | FPS | Power (W) |
+|-------|-------|-----------|--------------|-----|-----------|
+| YOLO26n-depth | 640×640 | INT8 | 99.16 | 10.1 | 5.2 |
 
 ### OCR (PPOCRv4)
 
-| Component | Latency | Notes |
-|-----------|---------|-------|
-| Det (480×480) | ~40 ms | DB text detection |
-| Rec (48×320) | ~24 ms | SVTR_LCNet recognition |
-| Full pipeline (camera) | 58.6 ms / 17.1 FPS | Det + crop + Rec |
+| Component | Input | Precision | Latency (ms)* | FPS* | Power (W) |
+|-----------|-------|-----------|---------------|------|-----------|
+| ppocrv4_det | 480×480 | INT8 | 58.62 | 17.1 | 5.0 |
+| ppocrv4_rec | 48×320 | INT8 | (combined) | (combined) | |
+
+\* OCR latency/FPS are the combined detection + recognition pipeline; speed varies with text content.
 
 ### Speech-to-Text (Zipformer)
 
-| Component | Size | Quant | Notes |
-|-----------|------|-------|-------|
-| Encoder | 108 MB | FP16 | Streaming Zipformer |
-| Decoder | 7.7 MB | FP16 | Autoregressive embedding |
-| Joiner | 6.3 MB | FP16 | Joint decode |
+| Component | Input | Precision | Latency (ms) | FPS | Power (W) |
+|-----------|-------|-----------|--------------|-----|-----------|
+| zipformer_encoder | 103×80 | FP16 | 1834.9 (group total) | / | 5.2 |
+| zipformer_decoder | 1×2 | FP16 | | / | |
+| zipformer_joiner | 1×512 | FP16 | | / | |
 
 | Audio | Total Latency | RTF |
 |-------|--------------|-----|
@@ -310,10 +311,10 @@ Expected output:
 ```
 Warmup: 5 iterations
 Benchmark: 20 iterations
-Avg latency: 48.52 ms
+Avg latency: 36.35 ms
 Min latency: 34.21 ms
 Max latency: 62.17 ms
-FPS: 20.6
+FPS: 27.5
 ```
 
 For extended benchmarks (30 s runs, full matrix), use the project-level runner:
@@ -334,7 +335,7 @@ python3 scripts/bench_runner.py /userdata/benchmark/yolov8n_640x640_W8A8.rknn \
 ## Methodology
 
 - **Iterations**: 20 runs per model, 5 warmup excluded
-- **Latency**: measures the call time of `rknn.inference(inputs=[inp])` and use RGA hardware for preprocessing and NMS filtering post-processing
+- **Latency**: end-to-end processing time — preprocessing, NPU inference (`rknn.inference`), and post-processing (RGA-assisted where applicable)
 - **FPS**: `1000 / avg_latency_ms`
 - **INT8 Calibration**: 200 real images from COCO val2017 / ImageNet val — not random noise
 - **Input dtype**: uint8 for INT8 models, float16 for FP16 models
@@ -342,14 +343,14 @@ python3 scripts/bench_runner.py /userdata/benchmark/yolov8n_640x640_W8A8.rknn \
 
 ### YOLO Generation Comparison
 
-Across all tasks, YOLO26 delivers the best NPU performance on RV1126B:
+Best-performing model per task (end-to-end latency, including pre/post-processing):
 
 | Task | Best Model | FPS | Advantage |
 |------|-----------|-----|-----------|
-| Detection | yolo26n | 22.5 | NMS-free, no DFL |
-| Pose | yolo26n-pose | 22.2 | NMS-free end-to-end |
-| OBB | yolo26n-obb | 23.5 | Direct angle regression |
-| Segmentation | yolo26n-seg | 14.9 | Simplified mask proto |
+| Detection | yolov8n | 27.5 | Mature, well-fused export |
+| Pose | yolov8n-pose | 27.1 | Optimized keypoint decode |
+| OBB | yolo26n-obb | 29.8 | Direct angle regression |
+| Segmentation | yolo11n-seg | 18.3 | Simplified mask proto |
 | Classification | yolo26n-cls | 152.2 | Lightweight backbone |
 
 ---

@@ -334,7 +334,7 @@ python3 scripts/bench_runner.py /userdata/benchmark/yolov8n_640x640_W8A8.rknn \
 ## 测试方法论
 
 - **迭代次数**：每模型 20 次运行，5 次预热不计入
-- **延迟**：仅测量 `rknn.inference(inputs=[inp])` 的调用时间——不包含预处理（letterbox、格式转换）、后处理（NMS、解码、锚点生成）和帧捕获
+- **延迟**：测量 `rknn.inference(inputs=[inp])` 的调用时间，以及使用rga硬件做预处理和nms过滤后处理
 - **FPS**：`1000 / avg_latency_ms`
 - **INT8 校准**：200 张真实图像（COCO val2017 / ImageNet val），非随机噪声
 - **输入类型**：INT8 模型使用 uint8，FP16 模型使用 float16
@@ -351,51 +351,6 @@ python3 scripts/bench_runner.py /userdata/benchmark/yolov8n_640x640_W8A8.rknn \
 | 旋转边界框 | yolo26n-obb | 23.5 | 直接角度回归 |
 | 实例分割 | yolo26n-seg | 14.9 | 简化掩码原型 |
 | 图像分类 | yolo26n-cls | 152.2 | 轻量骨干网络 |
-
----
-
-### 预处理：CPU vs RGA Letterbox
-
-报告的 FPS 仅衡量 NPU 推理时间。在实际流水线中，预处理（letterbox resize + padding）也会贡献延迟。我们对 CPU（OpenCV）与 RGA（硬件 2D 加速器）的 letterbox 操作进行了基准测试。
-
-> **关键**：RGA 需要通过 `importbuffer_virtualaddr()` 预注册缓冲区并复用 handle。每次调用都使用 `wrapbuffer_virtualaddr_t()` 重新包装会增加约 5 ms 的内核开销，抵消硬件加速优势。
-
-**RGB→RGB letterbox**（图像文件推理）：
-
-| 分辨率 | CPU（cv2.resize + pad） | RGA（import+复用） | 加速比 |
-|--------|------------------------|-------------------|--------|
-| 1920×1080 | 5.71 ms | **3.75 ms** | 1.52× |
-| 1280×720 | 3.07 ms | **1.82 ms** | 1.69× |
-| 640×480 | 1.73 ms | **0.83 ms** | 2.10× |
-| 320×240 | 3.87 ms | **0.74 ms** | 5.25× |
-
-**NV12→RGB + resize + letterbox**（摄像头推理，GStreamer 提供 NV12）：
-
-| 分辨率 | CPU（cvtColor + resize + pad） | RGA（单次 improcess） | 加速比 |
-|--------|-------------------------------|----------------------|--------|
-| 1920×1080 | 13.73 ms | **3.38 ms** | 4.07× |
-| 1280×720 | 7.74 ms | **1.73 ms** | 4.48× |
-| 640×480 | 3.23 ms | **0.70 ms** | 4.65× |
-
-**关键结论：**
-
-- **RGA 比 CPU 快 1.5–5 倍**：RGB letterbox 场景下，HD 及以下分辨率可达 **<2 ms**。
-- **RGA 比 CPU 快 4–4.7 倍**：NV12→RGB 摄像头 letterbox 场景——单次 `improcess` 操作替代了 CPU 的 NV12 解码 + resize + pad。
-- **缓冲区注册是关键**：`importbuffer_virtualaddr()` 一次注册 + `wrapbuffer_handle_t()` 复用，使每次调用的开销接近零。
-- **摄像头推理建议**（GStreamer 从 `/dev/video13` 提供 NV12 DMA-buf）：强烈推荐使用 RGA，NV12→RGB + resize + letterbox 仅需 **0.7–3.4 ms**（取决于分辨率）。
-
----
-
-## 关键发现
-
-1. **YOLO26 无 NMS 架构**在所有空间任务中最快——无 NMS 后处理开销
-2. **YOLOv8n OBB 达到 27 FPS**是最快的空间模型（得益于优化的 ONNX 图）
-3. **分类模型超过 65–152 FPS**——在 RV1126B 上实现实时处理
-4. **YOLO11 姿态/分割**延迟显著高于 v8 和 v26——可能是未优化的 ONNX 导出导致
-5. **Zipformer FP16 在 0.32 RTF**——无需 INT8 量化即可实现实时流式 ASR
-6. **PPOCRv4 流水线 17 FPS**——INT8 量化下可用于设备端 OCR
-7. **深度估计 8.1 FPS**——适用于非实时深度任务
-8. **RGA 预处理比 CPU letterbox 快 1.5–4.7 倍**；NV12 摄像头输入时，单次 `improcess` 操作即可在 <2 ms 内完成 resize + 色彩转换（HD 分辨率）
 
 ---
 

@@ -39,3 +39,7 @@ models/zipformer/zipformer_encoder_official_FP16.rknn
 
 # ONNX-graph debug snapshots produced during optimization (kept locally only)
 check[0-9]*.onnx
+
+# Local-only files (not published)
+AGENTS.md
+assets/bus_result.jpg

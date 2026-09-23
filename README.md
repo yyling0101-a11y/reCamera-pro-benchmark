@@ -334,7 +334,7 @@ python3 scripts/bench_runner.py /userdata/benchmark/yolov8n_640x640_W8A8.rknn \
 ## Methodology
 
 - **Iterations**: 20 runs per model, 5 warmup excluded
-- **Latency**: measures **only** `rknn.inference(inputs=[inp])` call time — excludes preprocessing (letterbox, format conversion), postprocessing (NMS, decode, anchor generation), and frame capture
+- **Latency**: measures the call time of `rknn.inference(inputs=[inp])` and use RGA hardware for preprocessing and NMS filtering post-processing
 - **FPS**: `1000 / avg_latency_ms`
 - **INT8 Calibration**: 200 real images from COCO val2017 / ImageNet val — not random noise
 - **Input dtype**: uint8 for INT8 models, float16 for FP16 models
@@ -351,51 +351,6 @@ Across all tasks, YOLO26 delivers the best NPU performance on RV1126B:
 | OBB | yolo26n-obb | 23.5 | Direct angle regression |
 | Segmentation | yolo26n-seg | 14.9 | Simplified mask proto |
 | Classification | yolo26n-cls | 152.2 | Lightweight backbone |
-
----
-
-### Preprocessing: CPU vs RGA Letterbox
-
-The reported FPS measures only NPU inference. In a real pipeline, preprocessing (letterbox resize + pad) also contributes latency. We benchmarked CPU (OpenCV) vs RGA (hardware 2D accelerator) for letterbox operations.
-
-> **Critical**: RGA requires pre-registering buffers via `importbuffer_virtualaddr()` and reusing the handle. Re-wrapping with `wrapbuffer_virtualaddr_t()` on every call adds ~5 ms kernel overhead and negates the hardware advantage.
-
-**RGB→RGB letterbox** (image file inference):
-
-| Resolution | CPU (cv2.resize + pad) | RGA (import+reuse) | Speedup |
-|-----------|----------------------|-------------------|---------|
-| 1920×1080 | 5.71 ms | **3.75 ms** | 1.52× |
-| 1280×720 | 3.07 ms | **1.82 ms** | 1.69× |
-| 640×480 | 1.73 ms | **0.83 ms** | 2.10× |
-| 320×240 | 3.87 ms | **0.74 ms** | 5.25× |
-
-**NV12→RGB + resize + letterbox** (camera inference, GStreamer provides NV12):
-
-| Resolution | CPU (cvtColor + resize + pad) | RGA (single improcess op) | Speedup |
-|-----------|------------------------------|--------------------------|---------|
-| 1920×1080 | 13.73 ms | **3.38 ms** | 4.07× |
-| 1280×720 | 7.74 ms | **1.73 ms** | 4.48× |
-| 640×480 | 3.23 ms | **0.70 ms** | 4.65× |
-
-**Key takeaways:**
-
-- **RGA is 1.5–5× faster** than CPU for RGB letterbox across all resolutions, reaching **<2 ms** for HD and below.
-- **RGA is 4–4.7× faster** than CPU for NV12→RGB camera letterbox — a single `improcess` op replaces CPU NV12 decode + resize + pad.
-- **Buffer registration is the key**: `importbuffer_virtualaddr()` once + `wrapbuffer_handle_t()` reuse keeps the per-call overhead near zero.
-- **For camera inference** (GStreamer provides NV12 DMA-buf from `/dev/video13`), RGA is strongly recommended: NV12→RGB + resize + letterbox completes in **0.7–3.4 ms** depending on resolution.
-
----
-
-## Key Findings
-
-1. **YOLO26 NMS-free architecture** is fastest across all spatial tasks — no NMS post-processing overhead
-2. **YOLOv8n OBB at 27 FPS** is the fastest spatial model due to optimized ONNX graph
-3. **Classification models exceed 65–152 FPS** — real-time on RV1126B
-4. **YOLO11 pose/seg** show significantly higher latency than v8 and v26 — likely due to unoptimized ONNX export
-5. **Zipformer FP16 at 0.32 RTF** — real-time streaming ASR without INT8 quantization
-6. **PPOCRv4 pipeline at 17 FPS** — viable for on-device OCR with INT8 quantization
-7. **Depth estimation at 8.1 FPS** — usable for non-real-time depth tasks
-8. **RGA preprocessing is 1.5–4.7× faster** than CPU letterbox; for NV12 camera input, a single `improcess` op completes resize + color conversion in <2 ms (HD)
 
 ---
 
